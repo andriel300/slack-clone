@@ -11,12 +11,14 @@ type Options = {
   onError?: (error: Error) => void;
   onSettled?: () => void;
   throwError?: boolean;
-}
+};
 
 export const useCreateWorkspace = () => {
   const [data, setData] = useState<ResponseType | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [status, setStatus] = useState<"success" | "error" | "settled" | "pending" | null>(null);
+  const [status, setStatus] = useState<
+    "success" | "error" | "settled" | "pending" | null
+  >(null);
 
   // const [isPending, setIsPending] = useState(false);
   // const [isSuccess, setIsSuccess] = useState(false);
@@ -30,26 +32,29 @@ export const useCreateWorkspace = () => {
 
   const mutation = useMutation(api.workspaces.create);
 
-  const mutate = useCallback(async (values: RequestType, options?: Options) => {
-    try {
-      setData(null);
-      setError(null);
-      setStatus("pending");
+  const mutate = useCallback(
+    async (values: RequestType, options?: Options) => {
+      try {
+        setData(null);
+        setError(null);
+        setStatus("pending");
 
-      const response = await mutation(values);
-      options?.onSuccess?.(response);
-      return response;
-    } catch (error) {
-      options?.onError?.(error as Error);
+        const response = await mutation(values);
+        options?.onSuccess?.(response);
+        return response;
+      } catch (error) {
+        options?.onError?.(error as Error);
 
-      if (options?.throwError) {
-        throw error;
+        if (options?.throwError) {
+          throw error;
+        }
+      } finally {
+        setStatus("settled");
+        options?.onSettled?.();
       }
-    } finally {
-      setStatus("settled");
-      options?.onSettled?.();
-    }
-  }, [mutation]);
+    },
+    [mutation],
+  );
 
   return { mutate, data, error, isPending, isSuccess, isError, isSettled };
-}
+};
