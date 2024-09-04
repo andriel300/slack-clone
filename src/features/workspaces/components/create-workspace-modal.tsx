@@ -6,13 +6,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { useCreateWorkspaceModal } from "../store/use-create-workspace-modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 
 export const CreateWorkspaceModal = () => {
   const router = useRouter();
@@ -29,14 +29,17 @@ export const CreateWorkspaceModal = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutate({ name }, {
-      onSuccess: (id) => {
-        router.push(`/workspace/${id}`);
-        handleClose();
-      }
-    });
+    mutate(
+      { name },
+      {
+        onSuccess: (id) => {
+          toast.success("Workspace created");
+          router.push(`/workspace/${id}`);
+          handleClose();
+        },
+      },
+    );
   };
-
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -55,9 +58,7 @@ export const CreateWorkspaceModal = () => {
             placeholder="Workspace name e.g. 'Work', 'Personal', 'Home'"
           />
           <div className="flex justify-end">
-            <Button disabled={isPending}>
-              Create
-            </Button>
+            <Button disabled={isPending}>Create</Button>
           </div>
         </form>
       </DialogContent>
