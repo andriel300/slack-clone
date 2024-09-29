@@ -4,7 +4,9 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable"
+} from "@/components/ui/resizable";
+
+import WorkspaceSidebar from "./workspace-sidebar";
 
 import Sidebar from "./sidebar";
 import Toolbar from "./toolbar";
@@ -21,14 +23,17 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
         <Sidebar />
         <ResizablePanelGroup
           direction="horizontal"
+          autoSaveId="ca-workspace-layout"
         >
-          <ResizablePanel>
-            <div>
-              Channels Sidebar
-            </div>
+          <ResizablePanel
+            defaultSize={20}
+            minSize={11}
+            className="bg-[#5E2C5F]"
+          >
+            <WorkspaceSidebar />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel>
+          <ResizablePanel minSize={20}>
             {children}
           </ResizablePanel>
         </ResizablePanelGroup>
